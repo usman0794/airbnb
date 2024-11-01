@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const Listing = require("./models/listing.js");
 const path = require("path");
 const methodOverride = require("method-override");
+const ejsMate = require("ejs-mate");
+const expressLayouts = require("express-ejs-layouts");
 
 main()
   .then(() => {
@@ -19,6 +21,11 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+app.engine("ejs", ejsMate);
+app.use(express.static(path.join(__dirname, "/public")));
+
+app.use(expressLayouts);
+app.set("layout", "layouts/boilerplate"); // Set default layout
 
 app.get("/", (req, res) => {
   res.send("Hi! I am root");
@@ -67,8 +74,7 @@ app.put("/listings/:id", async (req, res) => {
 // Delete Route
 app.delete("/listings/:id", async (req, res) => {
   let { id } = req.params;
-  let deletedListing = await Listing.findByIdAndDelete(id);
-  console.log(deletedListing);
+  await Listing.findByIdAndDelete(id);
   res.redirect("/listings");
 });
 
