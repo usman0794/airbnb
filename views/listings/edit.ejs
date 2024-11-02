@@ -16,6 +16,8 @@
           class="form-control"
           required
         />
+        <div class="valid-feedback">Title Looks Good</div>
+        <div class="invalid-feedback">You must Enter Title</div>
       </div>
 
       <div class="mb-3">
@@ -23,6 +25,7 @@
         <textarea name="listing[description]" class="form-control" required>
  <%= listing.description %> </textarea
         >
+        <div class="invalid-feedback">Please Enter a Short Description!</div>
       </div>
 
       <div class="mb-3">
@@ -34,6 +37,7 @@
           class="form-control"
           required
         />
+        <div class="invalid-feedback">Please Enter a valid Link!</div>
       </div>
 
       <div class="row">
@@ -73,6 +77,6 @@
 
       <button class="btn btn-dark mt-3 edit-btn">Edit</button>
     </form>
-    <script src="/js/script.js"></script>
   </div>
 </div>
+<script src="/js/script.js"></script>
