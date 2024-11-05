@@ -76,5 +76,24 @@
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
     </div>
+
+    <!-- Display Reviews Section -->
+    <div class="mt-4">
+      <h4>Reviews</h4>
+      <% if (listing.reviews && listing.reviews.length > 0) { %> <%
+      listing.reviews.forEach(function(review) { %>
+      <div class="card mb-3">
+        <div class="card-body">
+          <p class="card-text">
+            <strong>Rating:</strong> <%= review.rating %> / 5
+            <br />
+            <strong>Comment:</strong> <%= review.comment %>
+          </p>
+        </div>
+      </div>
+      <% }); %> <% } else { %>
+      <p>No reviews yet. Be the first to leave one!</p>
+      <% } %>
+    </div>
   </div>
 </div>
