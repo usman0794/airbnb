@@ -2,12 +2,15 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const Listing = require("./models/listing.js");
+const Review = require("./models/review.js");
+
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const expressLayouts = require("express-ejs-layouts");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
+const { listingSchema, reviewSchema } = require("./schema.js");
 
 main()
   .then(() => {
@@ -32,6 +35,26 @@ app.set("layout", "layouts/boilerplate"); // Set default layout
 app.get("/", (req, res) => {
   res.send("Hi! I am root");
 });
+
+const validateReview = (req, res, next) => {
+  let { error } = reviewSchema.validate(req.body); //joi
+  if (error) {
+    let errMsg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(400, errMsg);
+  } else {
+    next();
+  }
+};
+
+const validateListing = (req, res, next) => {
+  let { error } = listingSchema.validate(req.body); //joi
+  if (error) {
+    let errMsg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(400, errMsg);
+  } else {
+    next();
+  }
+};
 
 // Index Route
 app.get(
@@ -60,11 +83,8 @@ app.get(
 //Create Route
 app.post(
   "/listings",
+  validateListing,
   wrapAsync(async (req, res, next) => {
-    if (!req.body.listing) {
-      throw new ExpressError(400, "Send Valid Data for listing");
-    }
-
     const newListing = new Listing(req.body.listing);
     await newListing.save();
     res.redirect("/listings");
@@ -84,11 +104,8 @@ app.get(
 // Update Route
 app.put(
   "/listings/:id",
+  validateListing,
   wrapAsync(async (req, res) => {
-    if (!req.body.listing) {
-      throw new ExpressError(400, "Send Valid Data for listing");
-    }
-
     let { id } = req.params;
     await Listing.findByIdAndUpdate(id, { ...req.body.listing });
     res.redirect(`/listings/${id}`);
@@ -105,13 +122,35 @@ app.delete(
   })
 );
 
+//Review
+// Post Review
+
+app.post(
+  "/listings/:id/reviews",
+  validateReview,
+  wrapAsync(async (req, res) => {
+    const { id } = req.params;
+    const { rating, comment } = req.body.review;
+
+    const review = new Review({ rating, comment });
+    await review.save();
+
+    // Add the review reference to the listing
+    const listing = await Listing.findById(id);
+    listing.reviews.push(review._id);
+    await listing.save();
+
+    res.redirect(`/listings/${listing._id}`);
+  })
+);
+
 app.all("*", (req, res, next) => {
   next(new ExpressError(404, "Page not Found!"));
 });
 
 app.use((err, req, res, next) => {
   let { statusCode = 500, message = "Something went Wrong!" } = err;
-  res.status(statusCode).send(message);
+  res.status(statusCode).render("error.ejs", { message });
 });
 
 const port = 8080;

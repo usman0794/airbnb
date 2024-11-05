@@ -1,38 +1,80 @@
-<div class="row mt-3">
-  <div class="col-8 0ffset-2">
-    <h3 class="offset-3">Listing Details</h3>
-    <div>
-      <div class="card col-6 offset-3 show-card">
-        <img
-          src="<%= listing.Image %>"
-          class="card-img-top show-img"
-          alt="listing_image"
-        />
-        <div class="card-body">
-          <p class="card-text">
-            <b> <%= listing.title %></b> <br />
-            <%= listing.description %>
-            <br />
-            &#8360; <%= listing.price.toLocaleString("en-PK") %> <%=
-            listing.location %> <br />
-            <%= listing.country %>
-          </p>
-        </div>
-      </div>
+<div class="row mt-3 offset-3">
+  <div class="col-8">
+    <!-- Title Section -->
+    <div class="offset-wrapper">
+      <h3><%= listing.title %></h3>
+    </div>
 
-      <div class="btns mb-3">
-        <a
-          href="/listings/<%= listing._id %>/edit"
-          class="btn btn-dark col-1 offset-3 edit-btn"
-          >Edit</a
-        >
-        <form
-          method="POST"
-          action="/listings/<%= listing._id %>?_method=Delete"
-        >
-          <button class="btn btn-dark offset-5">Delete</button>
-        </form>
+    <!-- Listing Card Section -->
+    <div class="card mt-3 show-card">
+      <img
+        src="<%= listing.Image %>"
+        class="card-img-top show-img"
+        alt="Listing Image"
+      />
+      <div class="card-body">
+        <p class="card-text">
+          <%= listing.description %>
+          <br />
+          &#8360; <%= listing.price.toLocaleString("en-PK") %>
+          <br />
+          Location: <%= listing.location %>
+          <br />
+          Country: <%= listing.country %>
+        </p>
       </div>
+    </div>
+
+    <!-- Buttons Section -->
+    <div class="btns mb-3 d-flex justify-content-start">
+      <a
+        href="/listings/<%= listing._id %>/edit"
+        class="btn btn-dark me-3 edit-btn"
+        >Edit</a
+      >
+      <form method="POST" action="/listings/<%= listing._id %>/reviews">
+        <button type="submit" class="btn btn-dark">Delete</button>
+      </form>
+    </div>
+
+    <!-- Review Section -->
+    <div class="mt-4">
+      <h4>Leave a Review</h4>
+      <form
+        method="POST"
+        action="/listings/<%= listing._id %>/reviews"
+        novalidate
+        class="needs-validation"
+      >
+        <div class="mb-2">
+          <label for="rating">Rating</label>
+          <input
+            type="range"
+            min="1"
+            max="5"
+            id="rating"
+            name="review[rating]"
+            class="form-range"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="comment">Comments</label>
+          <textarea
+            name="review[comment]"
+            id="comment"
+            cols="30"
+            rows="5"
+            class="form-control"
+            required
+          ></textarea>
+          <div class="invalid-feedback">
+            Please submit some comments for Review
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
     </div>
   </div>
 </div>
