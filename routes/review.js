@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 const Review = require("../models/review.js");
 const Listing = require("../models/listing.js");
@@ -36,12 +36,10 @@ router.post(
   })
 );
 
-// Delete Review Route
-
 router.delete(
-  ":reviewid",
+  "/:reviewid",
   wrapAsync(async (req, res) => {
-    let { id, reviewid } = req.params;
+    const { id, reviewid } = req.params;
 
     await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewid } });
     await Review.findByIdAndDelete(reviewid);
