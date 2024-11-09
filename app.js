@@ -8,6 +8,7 @@ const ejsMate = require("ejs-mate");
 const expressLayouts = require("express-ejs-layouts");
 const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session");
+const flash = require("connect-flash");
 
 const listings = require("./routes/listing.js");
 const reviews = require("./routes/review.js");
@@ -40,13 +41,22 @@ const sessionOptions = {
   },
 };
 
-app.use(session(sessionOptions));
-
 app.use(expressLayouts);
 app.set("layout", "layouts/boilerplate"); // Set default layout
 
 app.get("/", (req, res) => {
   res.send("Hi! I am root");
+});
+
+app.use(session(sessionOptions));
+app.use(flash()); // Always calls flash before Routes
+
+// middleware flash
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  // console.log(res.locals.success);
+  next();
 });
 
 app.use("/listings", listings); //Route handler

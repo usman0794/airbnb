@@ -18,6 +18,7 @@ const validateReview = (req, res, next) => {
   }
 };
 
+//Post Review Route
 router.post(
   "/",
   validateReview,
@@ -31,6 +32,7 @@ router.post(
     const listing = await Listing.findById(id);
     listing.reviews.push(review._id);
     await listing.save();
+    req.flash("success", "New Review Created!");
 
     res.redirect(`/listings/${listing._id}`);
   })
@@ -43,6 +45,7 @@ router.delete(
 
     await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewid } });
     await Review.findByIdAndDelete(reviewid);
+    req.flash("success", "Review Deleted!");
 
     res.redirect(`/listings/${id}`);
   })
