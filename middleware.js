@@ -62,7 +62,6 @@ let isReviewAuthor = async (req, res, next) => {
     req.flash("error", "You don't have permission to delete this review.");
     return res.redirect(`/listings/${id}`);
   }
-
   next();
 };
 
