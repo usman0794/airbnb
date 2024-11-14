@@ -5,15 +5,16 @@ const Listing = require("../models/listing.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const { isLoggedin, isOwner, validateListing } = require("../middleware.js");
 const listingController = require("../controllers/listings.js");
+const multer = require("multer");
+const { storage } = require("../cloudConfig.js");
+const upload = multer({ storage });
 
-router
-  .route("/")
-  .get(wrapAsync(listingController.index))
-  .post(
-    isLoggedin,
-    validateListing,
-    wrapAsync(listingController.createListing)
-  );
+router.route("/").get(wrapAsync(listingController.index)).post(
+  isLoggedin,
+  upload.single("listing[image]"), //multer process
+  validateListing,
+  wrapAsync(listingController.createListing)
+);
 
 //New Route
 router.get("/new", isLoggedin, listingController.renderNewForm);
