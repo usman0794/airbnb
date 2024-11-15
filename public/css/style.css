@@ -115,3 +115,8 @@ body {
   padding-left: 0%;
   padding-right: 0%;
 }
+
+.listing-image-preview {
+  max-width: 250px;
+  height: auto;
+}
