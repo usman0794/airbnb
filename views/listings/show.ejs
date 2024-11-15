@@ -1,3 +1,8 @@
+<script>
+  const mapToken = "<%= process.env.MAP_TOKEN %>";
+  const listing = "<%- JSON.stringify(listing) %>";
+</script>
+
 <div class="row mt-3 offset-3">
   <div class="col-8">
     <div class="offset-wrapper">
@@ -37,6 +42,7 @@
 
     <div class="mt-4">
       <% if(currUser) { %>
+      <hr />
       <h4>Leave a Review</h4>
       <form
         method="POST"
@@ -112,13 +118,10 @@
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
       <hr />
-      <% } %>
-
-      <p><b>All Reviews</b></p>
+      <% } %> <% if(listing.reviews.length>0) {%>
       <div class="row">
-        <% if (listing.reviews.length === 0) { %>
-        <p class="text-muted">No reviews yet.</p>
-        <% } else { %> <% for (review of listing.reviews) { %>
+        <p><b>All Reviews</b></p>
+        <% for (review of listing.reviews) { %>
         <div class="card col-6 mb-3">
           <div class="card-body">
             <h5 class="card-title">@<%= review.author.username %></h5>
@@ -136,8 +139,13 @@
             <button class="btn btn-sm btn-dark mt-3">Delete</button>
           </form>
         </div>
-        <% } %> <% } %>
+        <% } %>
       </div>
+      <% } %>
     </div>
+    <h3>where you'll be</h3>
+    <div id="map"></div>
   </div>
 </div>
+
+<script src="/js/map.js"></script>
