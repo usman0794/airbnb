@@ -52,10 +52,6 @@ const sessionOptions = {
 app.use(expressLayouts);
 app.set("layout", "layouts/boilerplate"); // Set default layout
 
-app.get("/", (req, res) => {
-  res.send("Hi! I am root");
-});
-
 app.use(session(sessionOptions));
 app.use(flash()); // Always calls flash before Routes
 
